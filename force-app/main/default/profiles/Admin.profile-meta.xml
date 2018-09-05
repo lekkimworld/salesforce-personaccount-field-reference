@@ -2,6 +2,9 @@
 <Profile xmlns="http://soap.sforce.com/2006/04/metadata">
     <custom>false</custom>
     <layoutAssignments>
+        <layout>Account-Account Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>Badge__c-Badge Layout</layout>
     </layoutAssignments>
     <objectPermissions>
@@ -14,10 +17,14 @@
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <readable>true</readable>
         <field>Account.TopSecret__c</field>
+        <readable>true</readable>
+        <editable>true</editable>
     </fieldPermissions>
+    <tabVisibilities>
+        <tab>Badge__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
     <userLicense>Salesforce</userLicense>
     <userPermissions>
         <enabled>true</enabled>

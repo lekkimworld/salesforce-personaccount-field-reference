@@ -20,7 +20,7 @@ Account personAcc = new Account(
     Shoesize__pc=43.0,
 
     // fields from Account - notice custom field is suffixed with __c
-    Source_System_Id__c=personAccKey,
+    AccountSourceId__c=personAccKey,
     Site='London',
     TopSecret__c=true
 );
@@ -31,9 +31,9 @@ personAcc = [SELECT
         Name, 
         FirstName, LastName, PersonMobilePhone, PersonDepartment, 
         Shoesize__pc,
-        Source_System_Id__c, TopSecret__c, Site 
+        AccountSourceId__c, TopSecret__c, Site 
     FROM Account 
-    WHERE Source_System_Id__c =: personAccKey
+    WHERE AccountSourceId__c =: personAccKey
     LIMIT 1];
 System.debug(String.format(
     'My name is {0}, {1} of {2}. Call me on {3} or visit me in {4}... Am I licensed to kill? {5}!', 

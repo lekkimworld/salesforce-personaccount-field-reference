@@ -18,16 +18,16 @@ Account businessAcc = new Account(
 
     // custom fields on Account (suffixed with __c)
     TopSecret__c=true,
-    Source_System_Id__c=businessAccKey
+    AccountSourceId__c=businessAccKey
 );
 insert businessAcc;
 
 // read account back
 businessAcc = [SELECT 
         Name, Site,
-        Source_System_Id__c, TopSecret__c
+        AccountSourceId__c, TopSecret__c
     FROM Account 
-    WHERE Source_System_Id__c =: businessAccKey LIMIT 1];
+    WHERE AccountSourceId__c =: businessAccKey LIMIT 1];
 System.debug(String.format(
     '{0} is situated in {1} (top secret: {2})', 
     new List<String>{businessAcc.Name, businessAcc.Site, businessAcc.TopSecret__c ? 'yes' : 'no'}

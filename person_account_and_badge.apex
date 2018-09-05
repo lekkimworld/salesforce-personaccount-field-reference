@@ -20,7 +20,7 @@ Account personAcc = new Account(
     Shoesize__pc=43.0,
 
     // fields from Account - notice custom field is suffixed with __c
-    Source_System_Id__c=personAccKey,
+    AccountSourceId__c=personAccKey,
     Site='London',
     TopSecret__c=true
 );
