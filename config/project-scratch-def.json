@@ -1,0 +1,14 @@
+{
+    "orgName": "Acme Company",
+    "edition": "Developer",
+    "country": "DK",
+    "language": "en_US",
+    "orgPreferences" : {
+        "enabled": ["S1DesktopEnabled"]
+    },
+    "features": [
+        "PersonAccounts",
+        "AuthorApex",
+        "API"
+    ]
+}
