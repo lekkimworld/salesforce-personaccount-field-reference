@@ -28,10 +28,13 @@ sfdx force:apex:execute -u personaccount.org -f ./business_account.apex
 sfdx force:apex:execute -u personaccount.org -f ./person_account.apex
 sfdx force:apex:execute -u personaccount.org -f ./person_account_and_badge.apex
 
-sfdx force:apex:execute -u personaccount.org -f ./delete_accounts.apex
+# get record type id and update record type id in bulk file
 sfdx force:data:soql:query -u personaccount.org -q "select id, developername from RecordType where sobjecttype='Account' AND DeveloperName='PersonAccount'" --json | jq -r ".result.records[0].Id"
-# update record type id in bulk file
+
+sfdx force:apex:execute -u personaccount.org -f ./delete_accounts.apex
 sfdx force:data:bulk:upsert -s Account -f bulk/person_accounts.csv -i AccountSourceId__c -w 100 -u personaccount.org
-sfdx force:data:bulk:upsert -s Badge__c -f bulk/person_badges.csv -w 100 -u personaccount.org -i Id
+sfdx force:data:bulk:upsert -s Badge__c -f bulk/person_badges_ref_account.csv -w 100 -u personaccount.org -i Id
 
-
+sfdx force:apex:execute -u personaccount.org -f ./delete_accounts.apex
+sfdx force:data:bulk:upsert -s Account -f bulk/person_accounts.csv -i AccountSourceId__c -w 100 -u personaccount.org
+sfdx force:data:bulk:upsert -s Badge__c -f bulk/person_badges_ref_contact.csv -w 100 -u personaccount.org -i Id

@@ -8,6 +8,7 @@ RecordType personAccountRT = [SELECT Id
 
 // create Account but mark as PersonAccount by setting the record type id
 final String personAccKey = EncodingUtil.base64Encode(Crypto.generateAesKey(128));
+final String contactSrcId = EncodingUtil.base64Encode(Crypto.generateAesKey(128));
 Account personAcc = new Account(
     // record type
     RecordTypeId=personAccountRT.Id, 
@@ -18,6 +19,7 @@ Account personAcc = new Account(
     PersonMobilePhone='914-007-1234',
     PersonDepartment='Her Majestry\'s Secret Service',
     Shoesize__pc=43.0,
+    ContactSourceId__pc=contactSrcId,
 
     // fields from Account - notice custom field is suffixed with __c
     AccountSourceId__c=personAccKey,
