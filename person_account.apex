@@ -14,10 +14,10 @@ Account personAcc = new Account(
     RecordTypeId=personAccountRT.Id, 
 
     // fields from Contact - notice custom field is suffixed with __pc
-    FirstName='James', 
-    LastName='Bond',
+    FirstName='John', 
+    LastName='Doe',
     PersonMobilePhone='914-007-1234',
-    PersonDepartment='Her Majestry\'s Secret Service',
+    PersonDepartment='Secret Service',
     Shoesize__pc=43.0,
     ContactSourceId__pc=contactSrcId,
 
@@ -27,6 +27,42 @@ Account personAcc = new Account(
     TopSecret__c=true
 );
 insert personAcc;
+
+// read back the account
+personAcc = [SELECT 
+        Name, 
+        FirstName, LastName, PersonMobilePhone, PersonDepartment, 
+        Shoesize__pc, ContactSourceId__pc, 
+        AccountSourceId__c, TopSecret__c, Site 
+    FROM Account 
+    WHERE AccountSourceId__c =: personAccKey
+    LIMIT 1];
+System.debug(String.format(
+    'My name is {0}, {1} of {2}. Call me on {3} or visit me in {4}... Am I licensed to kill? {5}!', 
+    new List<String>{
+        personAcc.LastName, 
+        personAcc.Name, 
+        personAcc.PersonDepartment, 
+        personAcc.PersonMobilePhone, 
+        personAcc.Site,
+        personAcc.TopSecret__c ? 'Yes' : 'No'}
+));
+
+// update the account  - BUT for us to do this we need to have the Account WITHOUT the Name field as we otherwise 
+// will get security errors. My guess is that Name is locked for some reason with PersonAccounts. SO .... we start 
+// by refetching the Account without the Name and then we can update
+personAcc = [SELECT 
+        FirstName, LastName, PersonMobilePhone, PersonDepartment, 
+        Shoesize__pc, ContactSourceId__pc, 
+        AccountSourceId__c, TopSecret__c, Site 
+    FROM Account 
+    WHERE AccountSourceId__c =: personAccKey
+    LIMIT 1];
+personAcc.FirstName = 'James';
+personAcc.LastName = 'Bond';
+personAcc.Shoesize__pc = 43.5;
+personAcc.PersonDepartment='Her Majestry\'s Secret Service';
+upsert personAcc;
 
 // read back the account
 personAcc = [SELECT 

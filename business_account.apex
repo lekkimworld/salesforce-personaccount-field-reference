@@ -13,7 +13,7 @@ Account businessAcc = new Account(
     RecordTypeId=businessAccountRT.Id,
 
     // standard fields on Account
-    Name='Her Majestry\'s Secret Service',
+    Name='Secret Service',
     Site='London',
 
     // custom fields on Account (suffixed with __c)
@@ -34,6 +34,18 @@ System.debug(String.format(
 ));
 
 // update account
+businessAcc.Name = 'Her Majestry\'s Secret Service';
 businessAcc.Site = 'London, England';           // standard field
 businessAcc.TopSecret__c = true;                // custom field
 upsert businessAcc;
+
+// read account back
+businessAcc = [SELECT 
+        Name, Site,
+        AccountSourceId__c, TopSecret__c
+    FROM Account 
+    WHERE AccountSourceId__c =: businessAccKey LIMIT 1];
+System.debug(String.format(
+    '{0} is situated in {1} (top secret: {2})', 
+    new List<String>{businessAcc.Name, businessAcc.Site, businessAcc.TopSecret__c ? 'yes' : 'no'}
+));
