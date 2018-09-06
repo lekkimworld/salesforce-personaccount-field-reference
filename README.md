@@ -51,7 +51,21 @@ pretty easy and are as follows:
     2. **Custom fields from Account** Referenced using their API name as usual (i.e. Revenue__c, MyIntegrationId__c)
 4. Fields from Contact are available directly on Account:
     1. **Standard fields from Contact** The API name of the field is prefixed with "Person" (i.e. Contact.Department becomes Account.PersonDepartment, Contact.MobilePhone becomes Account.PersonMobilePhone) _**UNLESS**_ we are talking FirstName and LastName as they keep their names (i.e. Contact.FirstName becomes Account.FirstName, Contact.LastName becomes Account.LastName)
-    2. **Custom fields from Contact** The field API name suffix is changed from __c to __pc (i.e. Contact.Shoesize__c becomes Account.Shoesize__pc)
+    2. **Custom fields from Contact** The field API name suffix is changed from \__c to \__pc (i.e. Contact.Shoesize__c becomes Account.Shoesize__pc)
+
+**Remember:** If it's not a PersonAccount you cannot write or read \_\_pc fields as there is no underlying Contact to read them from. You can always check whether an Account is a PersonAccount by querying the IsPersonAccount field as shown below.
+
+```bash
+sfdx force:data:soql:query -u myorg -q "select id, name, ispersonaccount from account limit 5"
+ID                  NAME                     ISPERSONACCOUNT
+──────────────────  ───────────────────────  ───────────────
+0010E00000IFjJxQAL  Acme Inc. 
+0010E00000NrhAcQAJ  John Doe2                true
+0010E00000NrhAdQAJ  John Doe2                true
+0010E00000NrhAeQAJ  Salesforce.com                
+0010E00000NrhAfQAJ  John Doe2                true
+Total number of records retrieved: 5.
+```
 
 ## Examples ##
 Below are some examples to illustrate the above. The examples may be executed using [SalesforceDX](https://developer.salesforce.com/platform/dx) and as such I assume familiarity with SalesforceDX in 
