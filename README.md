@@ -76,3 +76,23 @@ sfdx force:apex:execute -u personaccount.org -f ./delete_accounts.apex
 sfdx force:data:bulk:upsert -s Account -f bulk/person_accounts.csv -i AccountSourceId__c -w 100 -u personaccount.org
 sfdx force:data:bulk:upsert -s Badge__c -f bulk/person_badges.csv -w 100 -u personaccount.org -i Id
 ```
+
+## Apex PersonAccount Caveats ##
+The Name field is special in Salesforce and is available on all objects. For PersonAccounts the Name field 
+is automatically updated to what you would expect i.e. the FirstName and LastName combined together. There is 
+a caveat when you need to update the Name field. When referencing PersonAccount records using Apex you cannot 
+update the FirstName and/or LastName on a PersonAccount on a record where you retrieved the Name field. 
+
+```java
+// fetch and account to update FirstName/LastName - BUT for us to do this we need to have the Account 
+// WITHOUT the Name field as we otherwise will get security errors. 
+Account personAcc = [SELECT 
+        FirstName, LastName, PersonMobilePhone, PersonDepartment
+    FROM Account 
+    WHERE Id = '7513E000004PpY5QAK'
+    LIMIT 1];
+personAcc.FirstName = 'James';
+personAcc.LastName = 'Bond';
+personAcc.PersonDepartment='Her Majestry\'s Secret Service';
+upsert personAcc;
+```
