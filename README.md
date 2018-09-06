@@ -91,22 +91,21 @@ sfdx force:data:bulk:upsert -s Account -f bulk/person_accounts.csv -i AccountSou
 sfdx force:data:bulk:upsert -s Badge__c -f bulk/person_badges.csv -w 100 -u personaccount.org -i Id
 ```
 
-## Apex PersonAccount Caveats ##
+## PersonAccount Caveats ##
 The Name field is special in Salesforce and is available on all objects. For PersonAccounts the Name field 
 is automatically updated to what you would expect i.e. the FirstName and LastName combined together. There is 
-a caveat when you need to update the Name field. When referencing PersonAccount records using Apex you cannot 
-update the FirstName and/or LastName on a PersonAccount on a record where you retrieved the Name field. 
+a caveat when you need to update the name for a PersonAccount. When referencing PersonAccount records you 
+cannot update the Name field. Instead you update the FirstName and/or LastName fields. 
 
-```java
-// fetch and account to update FirstName/LastName - BUT for us to do this we need to have the Account 
-// WITHOUT the Name field as we otherwise will get security errors. 
-Account personAcc = [SELECT 
-        FirstName, LastName, PersonMobilePhone, PersonDepartment
-    FROM Account 
-    WHERE Id = '7513E000004PpY5QAK'
-    LIMIT 1];
-personAcc.FirstName = 'James';
-personAcc.LastName = 'Bond';
-personAcc.PersonDepartment='Her Majestry\'s Secret Service';
-upsert personAcc;
+If done in Apex you cannot update the FirstName and/or LastName on a record where you retrieved the Name field. The code in `update_personaccount_name_error.apex` will fail with the following error as it retrieved the Name field and attempted to 
+update the FirstName and/or LastName.
+
+```bash
+$ sfdx force:apex:execute -u personaccount.org -f update_personaccount_name_error.apex
+Compiled successfully.
+ERROR:  Execution failed.
+
+ ▸    ERROR: System.DmlException: Upsert failed. First exception on row 0 with id 0013E00000tAeAmQAK; first error: INVALID_FIELD_FOR_INSERT_UPDATE, Unable to create/update fields: Name. Please check the security settings of this field and verify that it is read/write for your profile or
+ ▸    permission set.: [Name]
+ ▸    ERROR: AnonymousBlock: line 26, column 1
 ```
