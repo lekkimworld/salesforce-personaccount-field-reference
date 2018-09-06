@@ -25,6 +25,20 @@ link them and thus create the PersonAccount. Salesforce automatically makes the 
 
 **Please Note:** When using PersonAccounts you should always access the Account and never the associated Contact.
 
+## Finding the Record Type to use ##
+I find that the easiest way to see the record types are to query for them using SOQL. The below query lists the 
+record types for the Account object. Notice how one (the aptly named "Person Account") has the IsPersonType flag set 
+to `true`. That indicates that it's a PersonAccount record type and it's that ID you supply when creating an Account to 
+make it a PersonAccount.
+```
+sfdx force:data:soql:query -u myorg -q "select id, name, developername, ispersontype from RecordType where sobjecttype='Account'"
+ID                  NAME             DEVELOPERNAME          ISPERSONTYPE
+──────────────────  ────────────────  ─────────────────────  ────────────
+0120E0000006cQ3QAI  Business Account BusinessAccount
+0120E0000007fVaQAI  Person Account   PersonAccount           true
+Total number of records retrieved: 2.
+```
+
 ## Referencing Fields ##
 Because there is both an Account and a Contact for a PersonAccount there are some special rules to follow when 
 referencing fields. This goes for any access whether that be using Apex, REST API and the Bulk API. The rules are 
