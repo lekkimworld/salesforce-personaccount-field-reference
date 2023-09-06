@@ -31,7 +31,7 @@ record types for the Account object. Notice how one (the aptly named "Person Acc
 to `true`. That indicates that it's a PersonAccount record type and it's that ID you supply when creating an Account to 
 make it a PersonAccount.
 ```
-sfdx force:data:soql:query -u myorg -q "select id, name, developername, ispersontype from RecordType where sobjecttype='Account'"
+sf data query -o  myorg -q "select id, name, developername, ispersontype from RecordType where sobjecttype='Account'"
 ID                  NAME             DEVELOPERNAME          ISPERSONTYPE
 ──────────────────  ────────────────  ─────────────────────  ────────────
 0120E0000006cQ3QAI  Business Account BusinessAccount
@@ -56,7 +56,7 @@ pretty easy and are as follows:
 **Remember:** If it's not a PersonAccount you cannot write or read \_\_pc fields as there is no underlying Contact to read them from. You can always check whether an Account is a PersonAccount by querying the IsPersonAccount field as shown below.
 
 ```bash
-sfdx force:data:soql:query -u myorg -q "select id, name, ispersonaccount from account limit 5"
+sf data query -o  myorg -q "select id, name, ispersonaccount from account limit 5"
 ID                  NAME                     ISPERSONACCOUNT
 ──────────────────  ───────────────────────  ───────────────
 0010E00000IFjJxQAL  Acme Inc. 
@@ -76,33 +76,34 @@ the SalesforceDX trails on [Trailhead](https://trailhead.salesforce.com).
 ```bash
 # create scratch org aliased as "personaccount.org" using my DevHub (here aliased as "devhub") and 
 # push the source to the scratch org
-sfdx force:org:create -f config/project-scratch-def.json -a personaccount.org -v devhub
-sfdx force:source:push -u personaccount.org
+sf org create scratch -f config/project-scratch-def.json -a personaccount.org -v devhub
+sf project deploy start -u personaccount.org
 ```
 
 ### Apex Examples ###
 ```bash
 # work with regular accounts i.e. business accounts using Apex
-sfdx force:apex:execute -u personaccount.org -f ./business_account.apex
+sf apex run -o personaccount.org -f ./business_account.apex
 
 # work with PersonAccounts using Apex
-sfdx force:apex:execute -u personaccount.org -f ./person_account.apex
+sf apex run -o personaccount.org -f ./person_account.apex
 
 # example creating a record for a custom object referencing a PersonAccount
-sfdx force:apex:execute -u personaccount.org -f ./person_account_and_badge.apex
+sf apex run -o personaccount.org -f ./person_account_and_badge.apex
 ```
 
 ### Bulk API Examples ###
 ```bash
 # get record type id and update record type id in account bulk file
-sfdx force:data:soql:query -u personaccount.org -q "select id, developername from RecordType where sobjecttype='Account' AND DeveloperName='PersonAccount'" --json | jq -r ".result.records[0].Id"
+sf data query -o  -q "select id, developername from RecordType where sobjecttype='Account' AND DeveloperName='PersonAccount'" --json | jq -r ".result.records[0].Id"
 
 # delete accounts in the org
-sfdx force:apex:execute -u personaccount.org -f ./delete_accounts.apex
+sf apex run -o personaccount.org  -f ./delete_accounts.apex
 
 ## use Bulk API to insert PersonAccounts and custom object records
-sfdx force:data:bulk:upsert -s Account -f bulk/person_accounts.csv -i AccountSourceId__c -w 100 -u personaccount.org
-sfdx force:data:bulk:upsert -s Badge__c -f bulk/person_badges.csv -w 100 -u personaccount.org -i Id
+## this uses 1.0 of the bulk api, and should be updated to 2.0 in the future.
+sf force data bulk upsert -s Account -f bulk/person_accounts.csv -i AccountSourceId__c -w 100 -u personaccount.org
+sf force data bulk upsert -s Badge__c -f bulk/person_badges.csv -w 100 -u personaccount.org -i Id
 ```
 
 ## PersonAccount Caveats ##
@@ -115,7 +116,7 @@ If done in Apex you cannot update the FirstName and/or LastName on a record wher
 update the FirstName and/or LastName.
 
 ```bash
-$ sfdx force:apex:execute -u personaccount.org -f update_personaccount_name_error.apex
+$ sf apex run -o personaccount.org -f update_personaccount_name_error.apex
 Compiled successfully.
 ERROR:  Execution failed.
 
